@@ -1,7 +1,6 @@
 package org.halbasch.sudoku.controllers;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.halbasch.sudoku.SudokuStringUtils;
@@ -15,24 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = {"http://localhost:4200", "http://sudoku.halbasch.org"})
 public class SudokuController {
-    private static Groups getGroup(String group) {
-    	switch(group) {
-	    	case "rows": return Groups.rows;
-	    	case "columns": return Groups.columns;
-	    	case "blocks": return Groups.blocks;
-	    	case "positions": return Groups.positions;
-	    	case "windows": return Groups.windows;
-	    	case "crosses": return Groups.crosses;
-	    	default: return null;
-    	}
-    }
-    
     @GetMapping("/sudoku")
-    public Map<String, Object> solveSudoku(@RequestParam(required = false) String solve, @RequestParam(required = false) List<String> groups) {
-    	Groups[] rules = {Groups.rows, Groups.columns, Groups.blocks};
-    	if(groups != null)
-    		rules = groups.stream().map(x->getGroup(x)).toArray(Groups[]::new);
-    	SudokuDLX sudoku = new SudokuDLX(rules);
+    public Map<String, Object> solveSudoku(@RequestParam(required = false) String solve, @RequestParam Groups[] groups) {
+    	SudokuDLX sudoku = new SudokuDLX(groups);
     	if(solve != null)
     		sudoku.setClues(SudokuStringUtils.toArray(solve));
     	else
